@@ -1,0 +1,159 @@
+:root {
+  font-family: Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/** Input elements inherit font styles from root, in that way
+    if we change font in the roo, all input elements
+    will reflect that change automatically */
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+.app {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  gap: 16px;
+  flex-direction: column;
+  font-size: 12px;
+
+  .app__toolbar {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+
+    border: 1px solid rgba(16, 24, 40, 0.12);
+    border-radius: 10px;
+    padding: 6px 10px;
+  }
+
+  .app__toolbar--secondary {
+    border-top: 1px solid #e5e7eb;
+    background: #f8fafc;
+  }
+
+  .app__toolbarLabel {
+    opacity: 0.8;
+    min-width: 70px;
+    text-align: right;
+  }
+
+  .app__toolbarInfo {
+    margin-left: 18px;
+    font-size: 12px;
+    opacity: 0.75;
+  }
+
+  .app__select {
+    height: 28px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(16, 24, 40, 0.18);
+    background: white;
+    min-width: 100px;
+    //outline: none;
+
+    //&:focus {
+    //  border-color: rgba(16, 24, 40, 0.35);
+    //}
+  }
+}
+
+.app__button {
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(16, 24, 40, 0.18);
+  background: white;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(16, 24, 40, 0.04);
+  }
+}
+
+.app__graphWrap {
+  display: flex;
+  margin: 15px;
+  flex-grow: 1;
+  height: 100%;
+  border: 1px solid rgba(16, 24, 40, 0.12);
+}
+
+
+/* Tooltip styles */
+.appTooltip {
+  padding: 10px;
+
+  .appTooltip__title {
+    font-weight: 700;
+  }
+
+  .appTooltip__sub {
+    font-size: 10px;
+    opacity: 0.8;
+  }
+}
+
+/** Context menu styles
+    We don't need all of these extra
+    styles if we use QuickMenu component */
+
+.appContextIcon {
+  width: 24px;
+  height: 24px;
+  overflow: hidden;
+  background-color: #eee;
+  border: 1px solid rgb(219 212 212);
+  border-radius: 4px;
+  box-shadow: 0 1px 4px 0 rgb(0 0 0 / 20%);
+}
+
+.appContextContent {
+  z-index: 2;  // corner case (sticky column thar requires z-index 1
+  min-width: 140px;
+  padding: 5px;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 10px 38px -10px rgb(22 23 24 / 35%), 0 10px 20px -15px rgb(22 23 24 / 20%);
+  animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+
+  .appContextItem {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 25px;
+    padding: 0 5px;
+    font-size: 12px;
+    line-height: 1;
+    color: black;
+    user-select: none;
+    border-radius: 3px;
+    outline: none;
+
+    &[data-disabled] {
+      pointer-events: none;
+      opacity: 0.3;
+    }
+
+    &[data-highlighted] {
+      color: white;
+      background-color: #696579;
+    }
+  }
+}
+
+
+// added 
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to   { opacity: 1; transform: scale(1); }
+}

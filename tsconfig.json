@@ -1,0 +1,11 @@
+{
+  "include": ["src", "src/**/*.d.ts"],
+  "compilerOptions": {
+    "target": "ES2021",
+    "jsx": "react",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "Bundler",
+    "module": "ESNext"
+  }
+}

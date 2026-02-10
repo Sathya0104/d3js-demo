@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="9f2a006e-b5c4-41a6-900f-022bbfd2234a" name="Changes" comment="Added bezier curves option">
+      <change beforePath="$PROJECT_DIR$/.npmrc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EyeBall-ViewDemoD3-0.0.1.tgz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.internal.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/networkGraph/NetworkGraph.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/networkGraph/NetworkGraph.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/networkGraph/NetworkGraph.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/networkGraph/NetworkGraph.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/networkGraph/NetworkGraph.utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/networkGraph/NetworkGraph.utils.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/networkGraph/buildExportSvg.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/networkGraph/buildExportSvg.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/networkGraph/types/ComponentsType.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/networkGraph/types/ComponentsType.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/model_250.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/model_250.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/model_500.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/model_500.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/model_medium.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/model_medium.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_/Users/tedeschinie/Workspace/test/Eyeball-View-DemoD3" value="36pV3F8mwE6g4witfdQZTGWvBU4" />
+      <entry key="_/Users/tedeschinie/Workspace/test/Eyeball-View-DemoD3-no-negnius" value="397OvlFKmwzdODRrEtwIx900di9" />
+    </persistenceIdMap>
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="54" />
+    <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;tedeschinie_netscout&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Sathya0104/Eyeball-View-Demo1-.git&quot;,
+    &quot;accountId&quot;: &quot;c93f7a78-00c3-4a80-9657-fd813aca266e&quot;
+  }
+}</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="36pV3F8mwE6g4witfdQZTGWvBU4" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JavaScript Debug.localhost:5173.executor&quot;: &quot;Debug&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/tedeschinie/Workspace/test/Eyeball-View-DemoD3-no-negnius&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.github.copilot.settings.ApplicationConfigurable&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/src/data" />
+      <recent name="$PROJECT_DIR$/src/components/networkGraph" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/src/assets" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/components/networkGraph" />
+      <recent name="$PROJECT_DIR$/src/components/radialMultiNodes/types" />
+      <recent name="$PROJECT_DIR$/src/components/radialMultiNodes" />
+      <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/src/export" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="localhost:5173" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:5173/">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JavaScript Debug.localhost:5173" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.30387.83" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9f2a006e-b5c4-41a6-900f-022bbfd2234a" name="Changes" comment="" />
+      <created>1765703298279</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1765703298279</updated>
+      <workItem from="1765703299425" duration="22194000" />
+      <workItem from="1765800097392" duration="1286000" />
+      <workItem from="1767964455905" duration="11133000" />
+      <workItem from="1768130364847" duration="13665000" />
+      <workItem from="1768239955521" duration="15399000" />
+      <workItem from="1768466540905" duration="17085000" />
+      <workItem from="1768498489131" duration="8075000" />
+      <workItem from="1768564215510" duration="11469000" />
+      <workItem from="1768636014528" duration="37986000" />
+      <workItem from="1768819140354" duration="5209000" />
+      <workItem from="1768824429776" duration="13959000" />
+      <workItem from="1768988624118" duration="5020000" />
+      <workItem from="1768996723292" duration="1106000" />
+      <workItem from="1768997853629" duration="10463000" />
+      <workItem from="1769080970530" duration="11652000" />
+      <workItem from="1769159090080" duration="108000" />
+      <workItem from="1769159217044" duration="957000" />
+      <workItem from="1769166279980" duration="13188000" />
+      <workItem from="1769349555876" duration="9101000" />
+      <workItem from="1769589587696" duration="7285000" />
+      <workItem from="1769683251969" duration="7142000" />
+      <workItem from="1769932720535" duration="15311000" />
+      <workItem from="1770043877327" duration="337000" />
+      <workItem from="1770044233104" duration="337000" />
+    </task>
+    <task id="LOCAL-00001" summary="Changes to add GoJs demo">
+      <option name="closed" value="true" />
+      <created>1765796239509</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1765796239509</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Fixed D3 issue">
+      <option name="closed" value="true" />
+      <created>1768825075805</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1768825075805</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Added bezier curves option">
+      <option name="closed" value="true" />
+      <created>1768840401236</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1768840401236</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Changes to add GoJs demo" />
+    <MESSAGE value="Fixed D3 issue" />
+    <MESSAGE value="Added bezier curves option" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added bezier curves option" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/components/networkGraph/NetworkGraph.utils.ts</url>
+          <line>95</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
+  </component>
+</project>

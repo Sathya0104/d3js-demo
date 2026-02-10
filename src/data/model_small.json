@@ -1,0 +1,188 @@
+{
+  "nodes": [
+    {
+      "key": "CENTER",
+      "text": "Central Server",
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%223%22%20width%3D%2218%22%20height%3D%226%22%20rx%3D%222%22%20fill%3D%22%23344054%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%2210%22%20width%3D%2218%22%20height%3D%226%22%20rx%3D%222%22%20fill%3D%22%23475467%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%2217%22%20width%3D%2218%22%20height%3D%224%22%20rx%3D%222%22%20fill%3D%22%23667085%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%227%22%20cy%3D%226%22%20r%3D%221%22%20fill%3D%22%2312B76A%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2210%22%20cy%3D%226%22%20r%3D%221%22%20fill%3D%22%23F79009%22%2F%3E%0A%3C%2Fsvg%3E%0A"
+    },
+    {
+      "key": "N1",
+      "text": "Client 1",
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%231D2939%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23667085%22%2F%3E%0A%3C%2Fsvg%3E%0A"
+    },
+    {
+      "key": "N2",
+      "text": "Client 2",
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%231D2939%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23667085%22%2F%3E%0A%3C%2Fsvg%3E%0A"
+    },
+    {
+      "key": "N3",
+      "text": "Client 3",
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%231D2939%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23667085%22%2F%3E%0A%3C%2Fsvg%3E%0A"
+    },
+    {
+      "key": "N4",
+      "text": "Client 4",
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%231D2939%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23667085%22%2F%3E%0A%3C%2Fsvg%3E%0A"
+    },
+    {
+      "key": "N5",
+      "text": "Client 5",
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%231D2939%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23667085%22%2F%3E%0A%3C%2Fsvg%3E%0A",
+      "expandable": true
+    },
+    {
+      "key": "N6",
+      "text": "Client 6 with long text",
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%231D2939%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23667085%22%2F%3E%0A%3C%2Fsvg%3E%0A"
+    },
+    {
+      "key": "N7",
+      "text": "Client 7",
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%231D2939%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23667085%22%2F%3E%0A%3C%2Fsvg%3E%0A"
+    },
+    {
+      "key": "N8",
+      "text": "Client 8",
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%231D2939%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23667085%22%2F%3E%0A%3C%2Fsvg%3E%0A"
+    },
+    {
+      "key": "N9",
+      "text": "Client 9",
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%231D2939%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23667085%22%2F%3E%0A%3C%2Fsvg%3E%0A"
+    },
+    {
+      "key": "N10",
+      "text": "Client 10",
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%231D2939%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23667085%22%2F%3E%0A%3C%2Fsvg%3E%0A"
+    },
+    {
+      "key": "S1",
+      "text": "Service 1",
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%231D2939%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23667085%22%2F%3E%0A%3C%2Fsvg%3E%0A"
+    },
+    {
+      "key": "S2",
+      "text": "Service 2",
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%231D2939%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23667085%22%2F%3E%0A%3C%2Fsvg%3E%0A"
+    },
+    {
+      "key": "S3",
+      "text": "Service 3",
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%231D2939%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23667085%22%2F%3E%0A%3C%2Fsvg%3E%0A"
+    },
+    {
+      "key": "S4",
+      "text": "Service 4",
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%231D2939%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23667085%22%2F%3E%0A%3C%2Fsvg%3E%0A"
+    },
+    {
+      "key": "S5",
+      "text": "Service 5",
+      "expandable": true,
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%231D2939%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23667085%22%2F%3E%0A%3C%2Fsvg%3E%0A"
+    },
+    {
+      "key": "S6",
+      "text": "Service 6",
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%231D2939%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23667085%22%2F%3E%0A%3C%2Fsvg%3E%0A"
+    },
+    {
+      "key": "S7",
+      "text": "Service 7",
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%231D2939%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23667085%22%2F%3E%0A%3C%2Fsvg%3E%0A"
+    },
+    {
+      "key": "S8",
+      "text": "Service 8",
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%231D2939%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23667085%22%2F%3E%0A%3C%2Fsvg%3E%0A"
+    }
+  ],
+  "edges": [
+    {
+      "from": "CENTER",
+      "to": "N1",
+      "bidirectional": true,
+      "label": "500ms",
+      "color": "#FF0000",
+      "thickness": 3
+    },
+    {
+      "from": "CENTER",
+      "to": "N2",
+      "colors": "#FFA500"
+    },
+    {
+      "from": "CENTER",
+      "to": "N3",
+      "bidirectional": true,
+      "label": "200ms",
+      "color": "#00FF00",
+      "thickness": 2
+    },
+    {
+      "from": "N4",
+      "to": "CENTER",
+      "colors": "#0000FF"
+    },
+    {
+      "from": "CENTER",
+      "to": "N5"
+    },
+    {
+      "from": "CENTER",
+      "to": "N6"
+    },
+    {
+      "from": "CENTER",
+      "to": "N7"
+    },
+    {
+      "from": "CENTER",
+      "to": "N8"
+    },
+    {
+      "from": "N9",
+      "to": "CENTER"
+    },
+    {
+      "from": "CENTER",
+      "to": "N10"
+    },
+    {
+      "from": "N5",
+      "to": "S1"
+    },
+    {
+      "from": "N5",
+      "to": "S2"
+    },
+    {
+      "from": "N5",
+      "to": "S3"
+    },
+    {
+      "from": "N5",
+      "to": "S4"
+    },
+    {
+      "from": "N5",
+      "to": "S5"
+    },
+    {
+      "from": "S5",
+      "to": "S6",
+      "colors": "#FF0000"
+    },
+    {
+      "from": "S5",
+      "to": "S7",
+      "colors": "#FF0000"
+    },
+    {
+      "from": "S5",
+      "to": "S8",
+      "colors": "#FF0000"
+    }
+  ]
+}

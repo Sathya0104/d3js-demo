@@ -1,0 +1,236 @@
+/* NetworkGraph.scss */
+
+.rng {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+
+  .rng__svg {
+    display: block;
+  }
+
+  .rng__overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform-origin: 0 0;
+  }
+
+  .rng__map {
+    pointer-events: none;
+
+    .rng__mapPath {
+      shape-rendering: geometricPrecision;
+      fill: #F2F4F7;
+      stroke: #D0D5DD;
+      stroke-width: 1;
+      opacity: 1;
+    }
+
+    .rng--menuOpen {
+      .rng__svg {
+        pointer-events: none; // no zoom/pan when menu is open
+      }
+
+      .rng__overlay {
+        pointer-events: auto; // overlay e menu continuano a funzionare
+      }
+    }
+  }
+
+  .rng__edge {
+    /* Keep stroke rendering crisp where possible */
+    shape-rendering: geometricPrecision;
+    fill: none;
+    vector-effect: non-scaling-stroke;
+
+    &:hover {
+      stroke-width: calc(var(--sw, 1.5) * 2);
+      filter: drop-shadow(0 0 2px rgba(56, 189, 248, 0.9));
+      opacity: 1;
+      cursor: pointer;
+    }
+
+    .rng__edgeLabel {
+      user-select: none;
+      pointer-events: none;
+    }
+  }
+
+  .rng__edge--animated {
+    stroke-dasharray: 6 4;
+    animation: rng-dash-flow 1.2s linear infinite;
+  }
+
+  .rng__edge--bi.rng__edge--animated {
+    //animation-direction: reverse;
+    animation-duration: var(--edge-speed, 1.2s);
+  }
+
+  @keyframes rng-dash-flow {
+    from {
+      stroke-dashoffset: 0;
+    }
+    to {
+      stroke-dashoffset: -10;
+    }
+  }
+
+  .rng__node {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    cursor: pointer;
+    border-radius: 12px;
+
+    /* If you want a hover/focus style, do it here */
+    &:hover {
+      background: rgba(56, 189, 248, 0.12);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.9);
+      transform: translateZ(0) scale(1.03);
+    }
+
+    outline: none;
+
+    &:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 1px;
+    }
+
+    .rng__nodeIconWrap {
+      position: relative;
+      //margin-top: 4px;
+      //width: fit-content;
+      //height: fit-content;
+
+      .rng__nodeIcon {
+        margin-top: 4px;
+        pointer-events: none;
+      }
+
+      .rng__nodeExpand {
+        position: absolute;
+        top: -4px;
+        left: -4px;
+        width: 16px;
+        height: 16px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+    }
+    .rng__nodeLabel {
+      line-height: 14px;
+      text-align: center;
+      color: #101828;
+      width: 100%;
+      padding: 0 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      pointer-events: none;
+      transform: scale(var(--uiScale, 1));
+      transform-origin: center center;
+    }
+
+    .rng__nodeMenu {
+      position: absolute;
+      transform: translate(30px, -5px);
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    &:hover .rng__nodeMenu {
+      opacity: 1;
+    }
+  }
+
+  .rng__group {
+    position: absolute;
+    border: 2px dashed rgba(120, 140, 180, 0.9);
+    border-radius: 10px;
+    background: rgba(120, 140, 180, 0.08);
+    box-sizing: border-box;
+    cursor: pointer;
+    pointer-events: auto;
+
+
+    &:hover {
+      background: rgba(120, 140, 180, 0.14);
+    }
+
+    .rng__groupLabel {
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      line-height: 16px;
+      background: rgba(30, 40, 60, 0.85);
+      color: white;
+      user-select: none;
+      transform: scale(var(--uiScale, 1));
+      transform-origin: left top;
+    }
+  }
+
+  .rng__edge--cluster {
+    opacity: 0.85;
+  }
+
+  .rng__edgeLabel--cluster {
+    paint-order: stroke;
+    stroke: rgba(255, 255, 255, 0.7);
+    stroke-width: 3px;
+  }
+
+}
+
+/* Tooltip */
+.rng__tooltip {
+  background: white;
+  border: 1px solid rgba(16, 24, 40, 0.12);
+  border-radius: 10px;
+  box-shadow: 0 12px 28px rgba(16, 24, 40, 0.18);
+  padding: 8px;
+  max-width: 260px;
+
+  .rng__tooltipArrow {
+    fill: white;
+    stroke: rgba(16, 24, 40, 0.12);
+    stroke-width: 1px;
+  }
+}
+
+/* Dropdown menu */
+.rng__menu {
+  font-size: 11px;
+  background: #3b82f6;
+  border: 1px solid #eaecf0;
+  border-radius: 10px;
+  padding: 6px;
+  min-width: 200px;
+  z-index: 1000;
+}
+
+//.rng__menuItem {
+//  padding: 8px 10px;
+//  border-radius: 8px;
+//  cursor: pointer;
+//
+//  &:hover {
+//    background: rgba(16, 24, 40, 0.06);
+//  }
+//}
+//
+

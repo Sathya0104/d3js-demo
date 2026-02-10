@@ -1,0 +1,127 @@
+{
+  "nodes": [
+    {
+      "key": "rom",
+      "text": "Rome",
+      "icon": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect x='3' y='3' width='18' height='6' rx='2' fill='%23344054'/><rect x='3' y='10' width='18' height='6' rx='2' fill='%23475467'/><rect x='3' y='17' width='18' height='4' rx='2' fill='%23667085'/><circle cx='7' cy='6' r='1' fill='%2312B76A'/><circle cx='10' cy='6' r='1' fill='%23F79009'/></svg>",
+      "lat": 41.9028,
+      "lon": 12.4964
+    },
+
+    {
+      "key": "lon",
+      "text": "London",
+      "icon": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect x='3' y='3' width='18' height='6' rx='2' fill='%23344054'/><rect x='3' y='10' width='18' height='6' rx='2' fill='%23475467'/><rect x='3' y='17' width='18' height='4' rx='2' fill='%23667085'/></svg>",
+      "lat": 51.5072,
+      "lon": -0.1276
+    },
+
+    {
+      "key": "cai",
+      "text": "Cairo",
+      "icon": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect x='3' y='3' width='18' height='6' rx='2' fill='%23344054'/><rect x='3' y='10' width='18' height='6' rx='2' fill='%23475467'/><rect x='3' y='17' width='18' height='4' rx='2' fill='%23667085'/></svg>",
+      "lat": 30.0444,
+      "lon": 31.2357
+    },
+
+    {
+      "key": "nyc",
+      "text": "New York",
+      "expandable": true,
+      "icon": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect x='3' y='3' width='18' height='6' rx='2' fill='%23344054'/><rect x='3' y='10' width='18' height='6' rx='2' fill='%23475467'/><rect x='3' y='17' width='18' height='4' rx='2' fill='%23667085'/></svg>",
+      "lat": 40.7128,
+      "lon": -74.0060
+    },
+
+    {
+      "key": "mum",
+      "text": "Mumbai",
+      "expandable": true,
+      "icon": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect x='3' y='3' width='18' height='6' rx='2' fill='%23344054'/><rect x='3' y='10' width='18' height='6' rx='2' fill='%23475467'/><rect x='3' y='17' width='18' height='4' rx='2' fill='%23667085'/></svg>",
+      "lat": 19.0760,
+      "lon": 72.8777
+    },
+    {
+      "key": "sin",
+      "text": "Singapore",
+      "icon": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect x='3' y='3' width='18' height='6' rx='2' fill='%23344054'/><rect x='3' y='10' width='18' height='6' rx='2' fill='%23475467'/></svg>",
+      "lat": 1.3521,
+      "lon": 103.8198
+    },
+    {
+      "key": "hkg",
+      "text": "Hong Kong",
+      "icon": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect x='3' y='3' width='18' height='6' rx='2' fill='%23344054'/><rect x='3' y='10' width='18' height='6' rx='2' fill='%23475467'/></svg>",
+      "lat": 22.3193,
+      "lon": 114.1694
+    },
+    {
+      "key": "sel",
+      "text": "Seoul",
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%231D2939%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23667085%22%2F%3E%0A%3C%2Fsvg%3E%0A",
+      "lat": 37.5665,
+      "lon": 126.9780
+    },
+    {
+      "key": "sfo",
+      "text": "San Francisco",
+      "icon": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%3E%0A%20%20%20%20%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%20fill%3D%22%231D2939%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%2218%22%20width%3D%228%22%20height%3D%222%22%20rx%3D%221%22%20fill%3D%22%23667085%22%2F%3E%0A%3C%2Fsvg%3E%0A",
+      "lat": 37.7749,
+      "lon": -122.4194
+    },
+    {
+      "key": "sao",
+      "text": "São Paulo",
+      "icon": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect x='3' y='3' width='18' height='6' rx='2' fill='%23344054'/><rect x='3' y='10' width='18' height='6' rx='2' fill='%23475467'/></svg>",
+      "lat": -23.5505,
+      "lon": -46.6333
+    },
+    {
+      "key": "bue",
+      "text": "Buenos Aires",
+      "icon": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect x='3' y='3' width='18' height='6' rx='2' fill='%23344054'/><rect x='3' y='10' width='18' height='6' rx='2' fill='%23475467'/></svg>",
+      "lat": -34.6037,
+      "lon": -58.3816
+    },
+    {
+      "key": "scl",
+      "text": "Santiago",
+      "icon": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect x='3' y='3' width='18' height='6' rx='2' fill='%23344054'/><rect x='3' y='10' width='18' height='6' rx='2' fill='%23475467'/></svg>",
+      "lat": -33.4489,
+      "lon": -70.6693
+    },
+    {
+      "key": "bog",
+      "text": "Bogotá",
+      "icon": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect x='3' y='3' width='18' height='6' rx='2' fill='%23344054'/><rect x='3' y='10' width='18' height='6' rx='2' fill='%23475467'/></svg>",
+      "lat": 4.7110,
+      "lon": -74.0721
+    }
+  ],
+
+  "edges": [
+    { "from": "rom", "to": "lon",
+      "bidirectional": true,
+      "label": "500ms",
+      "color": "#FF0000"
+    },
+    { "from": "rom", "to": "cai" },
+    { "from": "rom", "to": "nyc" },
+    { "from": "rom", "to": "mum" },
+
+    { "from": "mum", "to": "sin" },
+    { "from": "mum", "to": "hkg" },
+    { "from": "mum", "to": "sel",
+      "bidirectional": true,
+      "label": "300ms",
+      "color": "#FF0000"
+
+    },
+
+    { "from": "nyc", "to": "sfo" },
+    { "from": "nyc", "to": "sao" },
+    { "from": "nyc", "to": "bue" },
+    { "from": "nyc", "to": "scl" },
+    { "from": "nyc", "to": "bog" }
+  ]
+}
