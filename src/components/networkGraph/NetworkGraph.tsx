@@ -107,7 +107,8 @@ import {
   NODE_BOX_HEIGHT,
   NODE_BOX_WIDTH
 } from "./Constants"
-import ExpandNode from '../../assets/node-collapse.svg?react'
+import ExpandNode from '../../assets/node-expand.svg?react'
+// import CollapseNode from '../../assets/node-collapse.svg?react'
 import "./NetworkGraph.scss"
 import {
   CLUSTER_GRID_SIZE,
@@ -146,50 +147,57 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
   const resizeTimeoutRef = useRef<number | null>(null)
   const layoutTimeRef = useRef<number>(0)
 
-  // ADDED NEWLY - HIERARCHICAL EXPANSION: EXPANSION PATH STATE
+  // HIERARCHICAL EXPANSION: EXPANSION PATH STATE
   // Tracks the current expansion path from root (centerKey) to the focused node.
-  // This creates a breadcrumb trail showing the navigation hierarchy.
-  // Example: [CENTER, N9, N50, N99] means user expanded CENTER→N9→N50→N99
   const [expansionPath, setExpansionPath] = useState<string[]>([centerKey])
 
-  // ADDED NEWLY - HIERARCHICAL EXPANSION: VISIBLE NODES COMPUTATION
-  // Computes which nodes should be visible based on the current expansion path.
-  // Shows: 1) All nodes in the expansion path (breadcrumb trail)
-  //        2) Direct children of the currently focused node (last in path)
-  // This creates a clean, focused view by hiding sibling branches and deeper descendants.
+  // FIXED: Build a complete node connectivity map for reliable child detection
+  const nodeConnectionsMap = useMemo(() => {
+    const map = new Map<string, Set<string>>()
+    
+    // Initialize sets for all nodes
+    data.nodes.forEach(node => {
+      map.set(node.key, new Set<string>())
+    })
+    
+    // Populate connections from all edges
+    data.edges.forEach(edge => {
+      map.get(edge.from)?.add(edge.to)
+      map.get(edge.to)?.add(edge.from)
+    })
+    
+    return map
+  }, [data.nodes, data.edges])
+
+  // FIXED: Enhanced visible nodes computation with guaranteed expansion path preservation
   const visibleNodes = useMemo(() => {
     if (expansionPath.length === 0) return data.nodes
 
     const focusNode = expansionPath[expansionPath.length - 1]
     const visibleKeys = new Set<string>()
 
-    // Always show all nodes in the expansion path (breadcrumb trail)
+    // CRITICAL FIX: Always show ALL nodes in the expansion path (breadcrumb trail)
+    // This ensures ancestor nodes never disappear regardless of depth
     expansionPath.forEach(key => visibleKeys.add(key))
 
     // Show direct children of the CURRENT focused node (last in path)
-    data.edges.forEach(edge => {
-      if (edge.from === focusNode) {
-        visibleKeys.add(edge.to)
-      }
-      if (edge.to === focusNode) {
-        visibleKeys.add(edge.from)
-      }
-    })
+    const focusConnections = nodeConnectionsMap.get(focusNode)
+    if (focusConnections) {
+      focusConnections.forEach(connectedKey => {
+        visibleKeys.add(connectedKey)
+      })
+    }
 
     return data.nodes.filter(node => visibleKeys.has(node.key))
-  }, [data.nodes, data.edges, expansionPath])
+  }, [data.nodes, nodeConnectionsMap, expansionPath])
 
-  // ADDED NEWLY - HIERARCHICAL EXPANSION: VISIBLE EDGES FILTERING
-  // Filters edges to only show connections between currently visible nodes.
-  // This ensures no edges are drawn to/from hidden nodes in collapsed branches.
+  // HIERARCHICAL EXPANSION: VISIBLE EDGES FILTERING
   const visibleEdges = useMemo(() => {
     const visibleKeys = new Set(visibleNodes.map(n => n.key))
     return data.edges.filter(edge => visibleKeys.has(edge.from) && visibleKeys.has(edge.to))
   }, [data.edges, visibleNodes])
 
-  // ADDED NEWLY - COLLAPSED NODE INFO COMPUTATION
-  // Computes for each node in the expansion path how many children are hidden (collapsed).
-  // This is used to show "+N nodes" indicator on breadcrumb nodes.
+  // COLLAPSED NODE INFO COMPUTATION
   const collapsedNodeInfo = useMemo(() => {
     const info = new Map<string, { totalChildren: number; hiddenChildren: number }>()
     
@@ -197,13 +205,12 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     
     // For each node in expansion path (except the last one which is the current focus)
     expansionPath.slice(0, -1).forEach(nodeKey => {
-      // Find all children of this node
-      const children = data.edges
-        .filter(e => e.from === nodeKey || e.to === nodeKey)
-        .map(e => e.from === nodeKey ? e.to : e.from)
-        .filter(childKey => childKey !== nodeKey) // Exclude self-loops
+      // Find all children of this node using the connections map
+      const connections = nodeConnectionsMap.get(nodeKey)
+      if (!connections) return
       
-      const totalChildren = new Set(children).size
+      const children = Array.from(connections).filter(childKey => childKey !== nodeKey)
+      const totalChildren = children.length
       const hiddenChildren = children.filter(childKey => !visibleKeys.has(childKey)).length
       
       if (hiddenChildren > 0) {
@@ -212,7 +219,7 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     })
     
     return info
-  }, [data.edges, visibleNodes, expansionPath])
+  }, [nodeConnectionsMap, visibleNodes, expansionPath])
 
   const { width: measuredWidth, height: measuredHeight } = useResizeObserver(containerRef)
 
@@ -225,13 +232,11 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     // geoConicConformal: good for mid-latitude countries
     // in future can change in geoIdentity and geoConicConformal based on area size
     const proj = geoMercator()
-
-    // fit on mapGeoJson if available
+   // fit on mapGeoJson if available
     if (mapGeoJson) {
       proj.fitSize([measuredWidth, measuredHeight], mapGeoJson)
       return proj
     }
-
     // else fit on node points
     const features = data.nodes
       .filter(n => Number.isFinite(n.lon) && Number.isFinite(n.lat))
@@ -242,7 +247,6 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
       }))
 
     const fc = { type: "FeatureCollection", features }
-
     // in case no valid features, skip fitting to avoid errors
     if (features.length > 0) {
       proj.fitSize([measuredWidth, measuredHeight], fc)
@@ -255,8 +259,7 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     if (!projection) return null
     return geoPathD3(projection)
   }, [projection])
-
-  /**
+   /**
    * Radii calculation:
    * We want to have a good default radius for each level
    * based on the container size, but also allow the user
@@ -273,21 +276,48 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     const r1 = config.levelRadii?.[1] ?? base
     const r2 = config.levelRadii?.[2] ?? Math.max(60, base * 1.15)
     const r3 = config.levelRadii?.[3] ?? Math.max(55, base * 1.15)
-    const r4 = config.levelRadii?.[4] ?? Math.max(55, base * 0.45)
-    const r5 = config.levelRadii?.[5] ?? Math.max(55, base * 0.45)
-    const r6 = config.levelRadii?.[6] ?? Math.max(55, base * 0.45)
-    const r7 = config.levelRadii?.[7] ?? Math.max(55, base * 0.45)
+    const r4 = config.levelRadii?.[4] ?? Math.max(55, base * 1.25)
+    const r5 = config.levelRadii?.[5] ?? Math.max(55, base * 1.25)
+    const r6 = config.levelRadii?.[6] ?? Math.max(55, base * 1.45)
+    const r7 = config.levelRadii?.[7] ?? Math.max(55, base * 1.45)
     return { 1: r1, 2: r2, 3: r3 , 4:r4, 5:r5, 6:r6, 7:r7 } as Record<1 | 2 | 3 | 4| 5 | 6 | 7, number>
   }, [measuredWidth, measuredHeight, config.levelRadii])
-
+  // const baseLayout = useMemo(() => {
+  //   console.time("[NetworkGraph] computeLayout")
+  //   if (layout === "geo") {
+  //     const res = new Map<string, NodePos>()
+  //     if (!projection) return res
+  //
+  //     for (const n of data.nodes) {
+  //       if (!Number.isFinite(n.lon) || !Number.isFinite(n.lat)) continue
+  //       const p = (projection)([n.lon, n.lat]) as [number, number] | null
+  //       if (!p) continue
+  //       res.set(n.key, { x: p[0], y: p[1] })
+  //     }
+  //     console.timeEnd("[NetworkGraph] computeLayout")
+  //     return res
+  //   }
+  //
+  //   const res = computeRadialLayout({
+  //     nodes: data.nodes,
+  //     edges: data.edges,
+  //     centerKey,
+  //     maxDepth: config.maxDepth,
+  //     radii,
+  //     childSpreadDeg: config.childSpreadDeg,
+  //   })
+  //   console.timeEnd("[NetworkGraph] computeLayout")
+  //   return res
+  //
+  // }, [data.nodes, data.edges, centerKey, config.maxDepth, radii, config.childSpreadDeg, projection])
+ 
+ 
   const baseLayout = useMemo(() => {
     const start = performance.now()
     if (layout === "geo") {
       const res = new Map<string, NodePos>()
       if (!projection) return res
 
-      // ADDED NEWLY - VISIBILITY FILTERING FOR GEOGRAPHIC LAYOUT
-      // Uses only visible nodes for geographic layout to respect expansion state
       for (const n of visibleNodes) {
         if (!Number.isFinite(n.lon) || !Number.isFinite(n.lat)) continue
         const p = (projection)([n.lon, n.lat]) as [number, number] | null
@@ -302,16 +332,10 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     const halfW = Math.max(160, measuredWidth / 2 - NODE_BOX_WIDTH)
     const halfH = Math.max(160, measuredHeight / 2 - NODE_BOX_HEIGHT)
 
-    // ADDED NEWLY - HIERARCHICAL EXPANSION FIX
-    // Uses the current focus node (last node in expansion path) as the layout center
-    // instead of always using the original centerKey. This enables infinite depth
-    // expansion by recentering the radial layout around the currently focused node.
-    // Without this, nodes beyond maxDepth from the original center won't get positions.
+    // CRITICAL FIX: Use the current focus node as layout center for infinite expansion
     const effectiveCenterKey = expansionPath[expansionPath.length - 1]
 
-    // ADDED NEWLY - VISIBILITY FILTERING
-    // Uses filtered visible nodes and edges for radial layout based on expansion path.
-    // This ensures only nodes in the current expansion hierarchy are positioned.
+    // Compute radial layout for visible nodes
     const res = computeRadialLayoutAdaptive({
       nodes: visibleNodes,
       edges: visibleEdges,
@@ -320,7 +344,6 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
       radii,
       childSpreadDeg: config.childSpreadDeg,
       rectRingsMinLvl1: 20,
-
       // NEW: lvl1 on rectangle perimeter with 2 rings
       level1Layout: {
         type: "rectRings",
@@ -330,8 +353,31 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
         innerScale: 0.72,  // inner ring closer to center
       },
       isExpandable: (n) => n.expandable && n.key !== centerKey,
-      nodeBox: { w: NODE_BOX_WIDTH, h: NODE_BOX_HEIGHT, pad: 25 }, // INCREASED padding from 10 to 25
+      nodeBox: { w: NODE_BOX_WIDTH, h: NODE_BOX_HEIGHT, pad: 25 },
     })
+
+    // CRITICAL FIX: Ensure ALL expansion path nodes have positions
+    // This guarantees breadcrumb trail nodes are always visible, even at infinite depth
+    expansionPath.forEach((pathKey, pathIdx) => {
+      if (!res.has(pathKey)) {
+        // Position breadcrumb nodes in a trail leading to the center
+        // Calculate offset based on position in path (earlier = further from center)
+        const distanceFromFocus = expansionPath.length - pathIdx - 1
+        
+        if (distanceFromFocus > 0) {
+          // Place ancestor nodes in a breadcrumb trail
+          // Position them to the left and slightly above center
+          const breadcrumbX = 180 * distanceFromFocus
+          const breadcrumbY = -400
+          
+          res.set(pathKey, { x: breadcrumbX, y: breadcrumbY })
+        } else {
+          // This is the focus node itself - place at center
+          res.set(pathKey, { x: 0, y: 0 })
+        }
+      }
+    })
+
     const end = performance.now()
     layoutTimeRef.current = Math.round(end - start)
     return res
@@ -345,7 +391,8 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     centerKey,
     config.maxDepth,
     radii,
-    config.childSpreadDeg])
+    config.childSpreadDeg,
+    expansionPath])
 
   const [positions, setPositions]         = useState<Map<string, NodePos>>(baseLayout)
   const [transform, setTransform]         = useState<ZoomTransform>(() => zoomIdentity)
@@ -362,7 +409,7 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
 
   const cluster = useMemo(() => {
     if (!effectiveClusterMode) {
-      // do not cluster calculation wne it is not needed
+      // do not cluster calculation wnen it is not needed
       return { groups: [], nodeToGroup: new Map(), groupPositions: new Map(), groupBounds: new Map() }
     }
     return computeGridClusters({ nodes: data.nodes, positions, gridSize: CLUSTER_GRID_SIZE })
@@ -384,8 +431,7 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
       groupSizes,
     })
   }, [effectiveClusterMode, data.edges, cluster.nodeToGroup, groupSizes])
-
-  // helper: zoom to a world point (wx, wy) at a target scale
+    // helper: zoom to a world point (wx, wy) at a target scale
   const zoomToWorldPoint = (wx: number, wy: number, targetK: number, duration = 250) => {
     if (measuredWidth === 0 || measuredHeight === 0) return
     const k = clamp(targetK, config.minZoom, config.maxZoom)
@@ -408,11 +454,37 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
   }, [baseLayout])
 
   const lastAddedKeysRef = useRef<string[]>([])
-
-  // ADDED NEWLY - HIERARCHICAL EXPANSION: RESET ON DATA CHANGE
-  // Resets the expansion path back to the root whenever the centerKey or data changes.
-  // This prevents showing stale expansion states when the graph data is updated or
-  // when switching between different graph models (e.g., in a demo with multiple datasets).
+   // useEffect(() => {
+  //   setPositions((prev) => {
+  //     // first render / hard reset
+  //     if (prev.size === 0) {
+  //       lastAddedKeysRef.current = Array.from(baseLayout.keys())
+  //       return baseLayout
+  //     }
+  //
+  //     const next = new Map(prev)
+  //     const added: string[] = []
+  //
+  //     // add / update only keys that exist in new layout
+  //     for (const [k, p] of baseLayout.entries()) {
+  //       if (!next.has(k)) {
+  //         next.set(k, p)
+  //         added.push(k)
+  //       }
+  //       // IMPORTANT: do NOT overwrite existing positions
+  //       // else you'd "reposition existing nodes"
+  //     }
+  //
+  //     // remove nodes no longer in data/layout (optional but recommended)
+  //     for (const k of next.keys()) {
+  //       if (!baseLayout.has(k)) next.delete(k)
+  //     }
+  //
+  //     lastAddedKeysRef.current = added
+  //     return next
+  //   })
+  // }, [baseLayout])
+  // HIERARCHICAL EXPANSION: RESET ON DATA CHANGE
   useEffect(() => {
     setExpansionPath([centerKey])
   }, [centerKey, data])
@@ -429,12 +501,11 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
       .scaleExtent([config.minZoom, config.maxZoom])
       .on("zoom", (event) => {
         gSel.attr("transform", event.transform.toString())
-
+   
         // keep latest transform in ref to avoid stale closure in other callbacks
         transformRef.current = event.transform
         setTransform(event.transform)
 
-        // sync overlay position
         if (overlayRef.current) {
           overlayRef.current.style.transform =
             `translate(${event.transform.x}px, ${event.transform.y}px) scale(${event.transform.k})`
@@ -446,35 +517,35 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     zoomRef.current = zoomBehavior
     svgSel.call(zoomBehavior)
 
+    svgSel.call(zoomBehavior.transform, transform)
     // Keep the current transform on resize instead of resetting every time.
     // If this is the first time, transform is identity and we will do an initial fit later.
-    svgSel.call(zoomBehavior.transform, transform)
-
     return () => {
       svgSel.on(".zoom", null)
     }
-  }, [measuredWidth, measuredHeight, config.minZoom, config.maxZoom]) // intentionally no "transform" dependency
+  }, [measuredWidth, measuredHeight, config.minZoom, config.maxZoom])
+  // intentionally no "transform" dependency
 
   /** Why do we need this effect?
    * When layout is "geo", we want to reset the zoom/pan to avoid weird positions.
    */
   useEffect(() => {
-    // when I exit from geo layout, reset the geo init flag
+     // when I exit from geo layout, reset the geo init flag
     if (layout !== "geo") {
       didGeoInitRef.current = false
       return
     }
-
+    
     // waiting for projection to be ready
     if (!projection) return
     if (!svgRef.current || !zoomRef.current) return
-
+    
     // execute the geo init only once
     if (didGeoInitRef.current) return
     didGeoInitRef.current = true
 
     const t = zoomIdentity
-
+    
     // keep current center and zoom from projection fitting
     transformRef.current = t
     setTransform(t)
@@ -482,12 +553,11 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     if (overlayRef.current) {
       overlayRef.current.style.transform = `translate(0px, 0px) scale(1)`
     }
-
     // apply without animation to avoid "jumping" feel
     select(svgRef.current).call(zoomRef.current.transform, t)
   }, [layout, projection])
-
-  /** Convert screen (client) coordinates to world (graph) coordinates.
+  
+    /** Convert screen (client) coordinates to world (graph) coordinates.
    *  This is used for node dragging and all other pointer-based interactions.
    * */
   const screenToWorld = (clientX: number, clientY: number) => {
@@ -497,7 +567,6 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     const rect = svg.getBoundingClientRect()
     const sx = clientX - rect.left
     const sy = clientY - rect.top
-
     // use the latest transform from ref to avoid stale closure
     return transformRef.current.invert([sx, sy])
   }
@@ -517,16 +586,16 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     if (measuredWidth === 0 || measuredHeight === 0) return
 
     const prev = prevSizeRef.current
-
+    
     // First valid measure: just store and exit.
     if (prev.width === 0 || prev.height === 0) {
       prevSizeRef.current = { width: measuredWidth, height: measuredHeight }
       return
     }
-
+    
     // If size didn't actually change, skip.
     if (prev.width === measuredWidth && prev.height === measuredHeight) return
-
+    
     // World point that was previously at the center of the viewport.
     const t = transformRef.current
     const worldCenter = t.invert([prev.width / 2, prev.height / 2])
@@ -535,20 +604,42 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
       .translate(measuredWidth / 2, measuredHeight / 2)
       .scale(t.k)
       .translate(-worldCenter[0], -worldCenter[1])
-
-
     // Apply without animation to avoid "jumping" feel.
     applyTransform(next, 0)
 
     prevSizeRef.current = { width: measuredWidth, height: measuredHeight }
   }, [measuredWidth, measuredHeight])
+ 
+    /** Debounced resize effect to avoid too many recalculations during resize.
+   *  It cold be a solution to have a clustering recalculation on resize too.
+   *  but it needs mre tweaking to avoid "jumping" behavior.
+   *  Use in replace to the above effect.
+   *
+  useEffect(() => {
+    if (measuredWidth === 0 || measuredHeight === 0) return
+    if (!zoomRef.current) return
+
+    if (resizeTimeoutRef.current) {
+      window.clearTimeout(resizeTimeoutRef.current)
+    }
+
+    resizeTimeoutRef.current = window.setTimeout(() => {
+      zoomToFit(positions)
+    }, 120) // 100–150ms è perfetto
+
+    return () => {
+      if (resizeTimeoutRef.current) {
+        window.clearTimeout(resizeTimeoutRef.current)
+      }
+    }
+  }, [measuredWidth, measuredHeight]) */
 
   /**
    * Reset initial-fit flag when graph data changes,
    * so the next layout will auto-fit again.
    */
   useEffect(() => {
-    // For geo layout, we consider that the fit is already done via projection fitting.
+  // For geo layout, we consider that the fit is already done via projection fitting.
     didInitialFitRef.current = layout === "geo"
     prevSizeRef.current = { width: 0, height: 0 }
   }, [layout, data])
@@ -556,24 +647,23 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
   /** Pan the graph by the given screen pixel offsets. */
   const panBySmooth = (dx: number, dy: number) => {
     if (!svgRef.current || !zoomRef.current) return
-
+  
     // stop any animations currently in progress
     select(svgRef.current).interrupt()
 
     const t = transformRef.current
     const next = zoomIdentity.translate(t.x + dx, t.y + dy).scale(t.k)
-
-    // short duration to smooth out the jump
+   // short duration to smooth out the jump
     applyTransform(next, 70)
   }
-
+  
   /** Zoom the graph by the given factor, centered on the viewport center. */
   const zoomBy = (factor: number, duration = 180) => {
     if (!svgRef.current || !zoomRef.current) return
     if (measuredWidth === 0 || measuredHeight === 0) return
 
     const t = transformRef.current
-
+    
     // world point currently at the center of the viewport
     const worldCenter = t.invert([measuredWidth / 2, measuredHeight / 2])
 
@@ -592,6 +682,10 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
   const zoomOut = () => zoomBy(1 / 1.2)
 
   const resetZoom = () => {
+    // const t = zoomIdentity.translate(measuredWidth / 2, measuredHeight / 2).scale(1)
+    // applyTransform(t, 300)
+    // Above code is good for radial layout, but for geo we want
+    // to reset to identity (no pan, no zoom)
     const t =
       layout === "geo"
         ? zoomIdentity
@@ -607,8 +701,8 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     const b = computeGraphBounds(posMap)
     if (!b) return
 
-    const padding = 5
-
+    const padding = 5  // clamp(Math.min(measuredWidth, measuredHeight) * 0.04, 12, 32)
+   
     const minX = b.minX - padding
     const minY = b.minY - padding
     const maxX = b.maxX + padding
@@ -636,7 +730,7 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     const added = lastAddedKeysRef.current
     if (!added || added.length === 0) return
     if (measuredWidth === 0 || measuredHeight === 0) return
-
+    
     // compute world-bounds of newly added nodes
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
     for (const k of added) {
@@ -648,7 +742,7 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
       maxY = Math.max(maxY, p.y + NODE_BOX_HEIGHT / 2)
     }
     if (!Number.isFinite(minX)) return
-
+  
     // current viewport in world coords
     const t = transformRef.current
     const [vx0, vy0] = t.invert([0, 0])
@@ -666,7 +760,6 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
       maxX <= vmaxX - pad &&
       minY >= vminY + pad &&
       maxY <= vmaxY - pad
-
     // if they are not visible, fit whole graph (positions unchanged)
     if (!alreadyVisible) {
       zoomToFit(positions)
@@ -686,17 +779,13 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     if (measuredWidth === 0 || measuredHeight === 0) return
     if (!zoomRef.current || !svgRef.current) return
     if (baseLayout.size === 0) return
-
-    // IMPORTANT: use the right layout here
+     // IMPORTANT: use the right layout here
     zoomToFit(baseLayout)
     didInitialFitRef.current = true
   }, [layout, measuredWidth, measuredHeight, baseLayout])
-
+  
+  /** Expose imperative methods to parent via ref. */
   const exportSvgString = () => {
-    // ADDED NEWLY - HIERARCHICAL EXPANSION: SVG EXPORT
-    // Exports only the currently visible nodes and edges based on the expansion state.
-    // This means the exported SVG shows the same focused view as displayed in the UI,
-    // not the entire graph. Only the expansion path and current level children are included.
     return buildExportSvg({
       width: measuredWidth,
       height: measuredHeight,
@@ -714,7 +803,6 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     downloadTextFile(filename, exportSvgString())
   }
 
-  /** Expose imperative methods to parent via ref. */
   useImperativeHandle(
     ref, () => ({
       getZoomPercent: () => Math.round((transform?.k ?? 1) * 100),
@@ -731,6 +819,10 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
   const onNodePointerDown = (e: React.PointerEvent, key: string) => {
     // do not start drag in readOnly mode
     if (readOnly) return
+    // in case of menu is open, do not start drag
+    // TODO review if this is not the correct behavior  but we need to avoid conflicts with context menu
+    // if (menuNodeKey) return
+    // e.preventDefault()
     e.stopPropagation()
     setIsDraggingNode(true)
     setDraggingNodeKey(key);
@@ -771,13 +863,24 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
       // No-op.
     }
   }
-
-  /** Handle keyboard events for panning and zooming. */
+  
+   /** Handle keyboard events for panning and zooming.
+   * arrow keys to pan
+   * + / - to zoom
+   * F to fit to screen and
+   * 0 to reset zoom
+   *
+   * Why is so important to have keyboard controls?
+   *
+   * in this component we may have too many nodes and maybe we are not able to see all the nodes
+   * or see all of them but with very high zoom out. Allow the user to use keyboard to navigate
+   * the graph is a good way to improve accessibility and usability.
+   * */
   const onKeyDownCapture = (e: React.KeyboardEvent) => {
     const isArmed = isHover || isFocusWithin
     if (!isArmed) return
     if (isTypingTarget(e.target)) return
-
+   
     // step: use shift for bigger steps
     const step = e.shiftKey ? 90 : 35
 
@@ -821,7 +924,6 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
         break
     } 
   }
-
   /** Render edges between nodes. */
   const renderClusterEdge = (from: string, to: string, count: number, idx: number) => {
     const p1 = cluster.groupPositions.get(from)
@@ -906,8 +1008,9 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     let curveArrows: React.ReactNode = null
     let markerMid: string | undefined
     let strokeDasharray: string | undefined
-
+    // --- BEZIER (your original advanced rendering) ---
     if (isBezierCurves) {
+      // point/tangent at t=0.5 for good arrow placement
       const t = 0.5
       const mt = 1 - t
       const bx = mt * mt * mt * x1 + 3 * mt * mt * t * c1x + 3 * mt * t * t * c2x + t * t * t * x2
@@ -933,6 +1036,7 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
       d = `M ${x1},${y1} C ${c1x},${c1y} ${c2x},${c2y} ${x2},${y2}`
     }
     else {
+      // --- STRAIGHT (your original) ---
       markerMid = e.bidirectional ? "url(#arrowMidBi)" : "url(#arrowMid)"
       d = `M ${x1},${y1} L ${mx},${my} L ${x2},${y2}`
     }
@@ -970,11 +1074,54 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     )
   }
 
+
+   // const renderedEdges = useMemo(() => {
+  //   if (effectiveClusterMode) {
+  //     return aggregatedEdges
+  //       .map((ae, idx) => renderClusterEdge(ae.from, ae.to, ae.count, idx))
+  //       .filter(Boolean)
+  //   }
+  //
+  //   return data.edges.map(renderNormalEdge).filter(Boolean)
+  // }, [effectiveClusterMode, aggregatedEdges, data.edges, positions, config.bezierCurves])
+
+  // const renderedEdges = useMemo(() => {
+  //   // NORMAL MODE → tutto normale
+  //   if (!effectiveClusterMode) {
+  //     return data.edges
+  //       .map(renderNormalEdge)
+  //       .filter(Boolean)
+  //   }
+  //
+  //   const result: React.ReactNode[] = []
+  //
+  //   // 1️⃣ aggregated edges (cluster ↔ cluster)
+  //   aggregatedEdges.forEach((ae, idx) => {
+  //     result.push(renderClusterEdge(ae.from, ae.to, ae.count, idx))
+  //   })
+  //
+  //   // 2️⃣ normal edges per nodi NON clusterizzati
+  //   data.edges.forEach((e, idx) => {
+  //     const fromClustered = clusteredNodes.has(e.from)
+  //     const toClustered   = clusteredNodes.has(e.to)
+  //
+  //     // edge valido SOLO se entrambi sono nodi singoli
+  //     if (!fromClustered && !toClustered) {
+  //       result.push(renderNormalEdge(e, idx))
+  //     }
+  //   })
+  //
+  //   return result.filter(Boolean)
+  // }, [
+  //   effectiveClusterMode,
+  //   aggregatedEdges,
+  //   clusteredNodes,
+  //   data.edges,
+  //   positions,
+  //   config.bezierCurves,
+  // ])
   const renderedEdges = useMemo(() => {
     if (!effectiveClusterMode) {
-      // ADDED NEWLY - HIERARCHICAL EXPANSION: EDGE RENDERING
-      // Renders only edges between currently visible nodes (filtered by expansion state).
-      // This ensures edges are only drawn for the active expansion path and its children.
       return visibleEdges.map(renderNormalEdge).filter(Boolean)
     }
 
@@ -984,9 +1131,6 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
       result.push(renderClusterEdge(ae.from, ae.to, ae.count, idx))
     })
 
-    // ADDED NEWLY - HIERARCHICAL EXPANSION: CLUSTER MODE EDGE RENDERING
-    // In cluster mode, renders only edges between visible nodes (respects expansion state).
-    // Skips edges where either endpoint is part of a multi-node cluster.
     visibleEdges.forEach((e, idx) => {
       const fromClustered = groupSizes.get(cluster.nodeToGroup.get(e.from) ?? "")! > 1
       const toClustered   = groupSizes.get(cluster.nodeToGroup.get(e.to) ?? "")! > 1
@@ -1005,12 +1149,16 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     config.bezierCurves,
     groupSizes,
   ])
-
-  /** Render map when layout is "geo" */
+  
+  /** Render map when layout is "geo"
+   *  Why rendering the map inside useMemo?
+   *  Because the map rendering is static, it depends only on the layout, geoPath and mapGeoJson.
+   *  If we render it directly in the JSX, it will re-render on every state change (like node positions),
+   * */
   const renderedMap = useMemo(() => {
     if (layout !== "geo") return null
     if (!geoPath || !mapGeoJson) return null
-
+    // simple rendering of GeoJSON features
     const features = (mapGeoJson?.features ?? [])
 
     return (
@@ -1027,7 +1175,19 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     )
   }, [layout, geoPath, mapGeoJson])
 
-  /** Render nodes as HTML elements overlaid on top of the SVG. */
+   /** Render nodes as HTML elements overlaid on top of the SVG.
+   *  Why HTML and not SVG?
+   *  Because HTML is way more easy to handle interactivity (tooltips, context menus, clicks, focus, etc)
+   *  and we can leverage existing libraries like Radix UI for tooltips and context menus.
+   *  Also, we can use images easily for node icons.
+   *  The performance is good enough for a reasonable number of nodes (hundreds).
+   *
+   *  TODO: Improve performance if needed
+   *  - create a node component, handle the menu and tooltip inside it,
+   *    to avoid re-rendering all nodes on every change
+   *
+   * */
+  
   const renderNodeElement = (n: NetworkNode) => {
     const p = positions.get(n.key)
     if (!p) return null
@@ -1036,8 +1196,6 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     const top = p.y - NODE_BOX_HEIGHT / 2
     const ContentContextMenu = renderNodeContextMenu ?? (() => null)
 
-    // ADDED NEWLY - COLLAPSED NODE INFO
-    // Check if this node has hidden (collapsed) children to show indicator
     const collapsedInfo = collapsedNodeInfo.get(n.key)
     const hasCollapsedChildren = collapsedInfo && collapsedInfo.hiddenChildren > 0
 
@@ -1046,42 +1204,29 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
       onNodeClick?.(n)
     }
 
-    // ADDED NEWLY - HIERARCHICAL EXPANSION: EXPAND BUTTON CLICK HANDLER
-    // Handles the logic when a node's expand button is clicked.
-    // Three scenarios:
-    //   1) Direct child of current focus → Add to expansion path (drill down)
-    //   2) Node already in path → Navigate back to that level (drill up)
-    //   3) Unrelated node → No action (shouldn't happen with proper UI)
+    // FIXED: Enhanced expand click handler with better child detection
     const onExpandClick = (e: React.MouseEvent) => {
       e.stopPropagation()
       
       if (n.key !== centerKey) {
-        // Find if this node is a direct child of the current focus node
         const currentFocus = expansionPath[expansionPath.length - 1]
         
-        // IMPORTANT: Check against ALL edges in original data, not filtered visibleEdges.
-        // This is critical for deep expansions (level 3+) to work correctly, because
-        // visibleEdges only contains edges between currently visible nodes, which may
-        // not include the parent-child relationship we're checking for nodes at depth 4+.
-        const isDirectChild = data.edges.some(
-          edge => (edge.from === currentFocus && edge.to === n.key) || 
-                  (edge.to === currentFocus && edge.from === n.key)
-        )
+        // CRITICAL FIX: Use the nodeConnectionsMap for reliable child detection
+        const currentFocusConnections = nodeConnectionsMap.get(currentFocus)
+        const isDirectChild = currentFocusConnections?.has(n.key) ?? false
         
         if (isDirectChild) {
-          // Scenario 1: This is a child of current focus → expand by adding to path
+          // Scenario 1: Child of current focus → expand by adding to path
           setExpansionPath([...expansionPath, n.key])
         } else {
-          // Scenario 2: Check if this node is already in the expansion path
+          // Scenario 2: Check if this node is in the expansion path → navigate back
           const nodeIndexInPath = expansionPath.indexOf(n.key)
           if (nodeIndexInPath !== -1) {
-            // If found in path → navigate back up by slicing the path to this node
             setExpansionPath(expansionPath.slice(0, nodeIndexInPath + 1))
           }
         }
       }
       
-      // Call the parent's callback if provided (for logging, analytics, etc.)
       onNodeExpandableClick?.(n)
     }
 
@@ -1140,7 +1285,6 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
         <Tooltip.Portal>
           <Tooltip.Content className="rng__tooltip" side="top" align="center">
             <ContentTooltip node={n} />
-            {/* ADDED NEWLY - Show collapsed info in tooltip */}
             {hasCollapsedChildren && (
               <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid rgba(18, 18, 18, 0.2)' }}>
                 <div style={{ fontSize: '12px', color: 'rgba(18, 18, 18, 0.9)' }}>
@@ -1185,15 +1329,8 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
   }
 
   const renderedNodesOverlay = useMemo(() => {
-    // ADDED NEWLY - HIERARCHICAL EXPANSION: NODE RENDERING
-    // Filters to only render nodes that are:
-    //   1) In the current expansion path (breadcrumb trail), OR
-    //   2) Direct children of the currently focused node
-    // This creates the focused hierarchical view where only relevant nodes are shown.
     const nodesWithPos = visibleNodes.filter((n) => positions.has(n.key))
 
-    // ADDED NEWLY - COLLAPSED NODE BOXES
-    // Render surrounding boxes for nodes with collapsed children
     const collapsedBoxes = nodesWithPos
       .filter(n => {
         const info = collapsedNodeInfo.get(n.key)
@@ -1206,8 +1343,6 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
         const info = collapsedNodeInfo.get(n.key)!
         const ContentContextMenu = renderNodeContextMenu ?? (() => null)
 
-        // Box surrounds the node with padding
-        // INCREASED padding from 15 to 20 to prevent box collisions when multiple nodes are expanded
         const padding = 20
         const boxWidth = NODE_BOX_WIDTH + padding * 2
         const boxHeight = NODE_BOX_HEIGHT + padding * 2
@@ -1231,7 +1366,6 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
               zIndex: 0,
             }}
           >
-            {/* Count badge at top-right corner */}
             <div
               style={{
                 position: 'absolute',
@@ -1253,7 +1387,6 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
               }}
               onClick={(e) => {
                 e.stopPropagation()
-                // Navigate back to this node to show all its children
                 const nodeIndex = expansionPath.indexOf(n.key)
                 if (nodeIndex !== -1) {
                   setExpansionPath(expansionPath.slice(0, nodeIndex + 1))
@@ -1264,7 +1397,6 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
             >
               +{info.hiddenChildren}
               
-              {/* Context menu trigger - invisible but clickable */}
               <div 
                 style={{ 
                   position: 'relative',
@@ -1279,7 +1411,6 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
                   setMenuNodeKey(n.key)
                 }}
               >
-                {/* Three dots menu icon */}
                 <div style={{
                   display: 'flex',
                   flexDirection: 'column',
@@ -1292,7 +1423,6 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
                   <div style={{ width: '3px', height: '3px', borderRadius: '70%' }} />
                 </div>
                 
-                {/* Context menu */}
                 <div style={{ position: 'absolute', top: 0, left: 0  ,  color: '#000000'}}>
                   <ContentContextMenu
                     open={menuNodeKey === n.key}
@@ -1308,7 +1438,7 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
       })
 
     if (!effectiveClusterMode) {
-      // Normal mode: render all visible nodes with their tooltips and interactions
+    
       return (
         <>
           {collapsedBoxes}
@@ -1317,9 +1447,10 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
       )
     }
 
-    // Cluster mode: aggregate nodes into groups when zoomed out
-    // - Groups with >1 member are rendered as cluster rectangles with count badges
-    // - Nodes that are alone in their group still render normally
+    
+    // cluster mode:
+    // - groups with >1 member are rectangles
+    // - nodes that are alone in their group still render normally
     const groups = cluster.groups
     const rects = groups.filter((g) => g.members.length > 1).map(renderClusterRect)
 
@@ -1351,7 +1482,7 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
   ])
 
   const uiScale = 1 / transform.k
-  const uiScaleClamped = clamp(uiScale, 0.75, 1.15) // min/max
+  const uiScaleClamped = clamp(uiScale, 0.75, 1.15)
 
   return (
     // biome-ignore lint/a11y/noStaticElementInteractions: <explanation>
@@ -1370,6 +1501,10 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
         setIsFocusWithin(false)
       }}
       onKeyDownCapture={onKeyDownCapture}
+      // tabIndex={0}
+      // onMouseEnter={() => setIsActive(true)}
+      // onMouseLeave={() => setIsActive(false)}
+      // onPointerDown={() => containerRef.current?.focus()}
     >
       {measuredWidth > 0 && measuredHeight > 0 && (
         <>
@@ -1404,7 +1539,7 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
                 />
               </marker>
             </defs>
-
+            {/*<g ref={gRef}>{renderedEdges}</g>*/}
             <g ref={gRef}>
               {renderedMap}
               <g className="rng__edges">
@@ -1412,6 +1547,11 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
               </g>
             </g>
           </svg>
+             {/* Render nodes using HTML DOM for easier interactivity
+              what uiScaleClamped does: keep the text size readable when zooming in/out
+              the font size don't scale too much, keeping it between 0.75 and 1.15
+              of the original size
+          */}
           <div ref={overlayRef}
              className="rng__overlay"
                style={{ ["--uiScale" as any]: uiScaleClamped }}>

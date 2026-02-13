@@ -136,10 +136,14 @@ export default function App() {
 
   const onNodeClick = (node: NetworkNode) => {
     console.log("nodeClick", node)
+     if (node.key === selectedModel.centerKey) {
+    window.location.reload()
+  }
   }
 
   const onNodeExpandClick = (node: NetworkNode) => {
-    // alert(`onNodeExpandClick: ${JSON.stringify(node)}`)
+    alert(`onNodeExpandClick: ${JSON.stringify(node.key)}`)
+   
   }
 
 
