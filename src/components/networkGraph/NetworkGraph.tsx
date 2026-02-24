@@ -108,7 +108,7 @@ import {
   NODE_BOX_WIDTH
 } from "./Constants"
 import ExpandNode from '../../assets/node-expand.svg?react'
-// import CollapseNode from '../../assets/node-collapse.svg?react'
+import CollapseNode from '../../assets/node-collapse.svg?react'
 import "./NetworkGraph.scss"
 import {
   CLUSTER_GRID_SIZE,
@@ -431,7 +431,8 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
       groupSizes,
     })
   }, [effectiveClusterMode, data.edges, cluster.nodeToGroup, groupSizes])
-    // helper: zoom to a world point (wx, wy) at a target scale
+
+  // helper: zoom to a world point (wx, wy) at a target scale
   const zoomToWorldPoint = (wx: number, wy: number, targetK: number, duration = 250) => {
     if (measuredWidth === 0 || measuredHeight === 0) return
     const k = clamp(targetK, config.minZoom, config.maxZoom)
@@ -484,6 +485,7 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
   //     return next
   //   })
   // }, [baseLayout])
+
   // HIERARCHICAL EXPANSION: RESET ON DATA CHANGE
   useEffect(() => {
     setExpansionPath([centerKey])
@@ -557,7 +559,7 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     select(svgRef.current).call(zoomRef.current.transform, t)
   }, [layout, projection])
   
-    /** Convert screen (client) coordinates to world (graph) coordinates.
+  /** Convert screen (client) coordinates to world (graph) coordinates.
    *  This is used for node dragging and all other pointer-based interactions.
    * */
   const screenToWorld = (clientX: number, clientY: number) => {
@@ -783,7 +785,76 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     zoomToFit(baseLayout)
     didInitialFitRef.current = true
   }, [layout, measuredWidth, measuredHeight, baseLayout])
-  
+
+  // ─── AUTO-FIT ON EXPANSION ────────────────────────────────────────────────
+  // Track the previous expansionPath so we can detect when the user has
+  // drilled in (path grew) or navigated back (path shrank).
+  // We only want to auto-fit on user-driven expand/collapse actions, NOT on
+  // initial mount (that is handled by the initial-fit effect above).
+  const prevExpansionLengthRef = useRef<number>(expansionPath.length)
+
+  // This effect fires whenever expansionPath changes (expand OR collapse).
+  // We use setTimeout(0) to defer the zoomToFit call by one tick so that:
+  //   1. setExpansionPath has been committed to state.
+  //   2. The baseLayout useMemo has recomputed (synchronously, same render).
+  //   3. The setPositions(baseLayout) effect above has had a chance to flush
+  //      the updated positions into state before we call zoomToFit.
+  //
+  // Why not depend on `positions` directly?
+  // Because positions also changes during node dragging, and we must NOT
+  // auto-fit while the user is dragging a node around.
+  //
+  // Why pass baseLayout to zoomToFit instead of positions?
+  // Because on the very first tick after an expansion, the positions state
+  // may still hold the old layout. baseLayout is always the freshly computed
+  // result from the useMemo above, so it is safe to use as the source of
+  // truth for the fit calculation immediately after an expansion.
+  useEffect(() => {
+    // Skip the very first mount — initial fit is handled separately above.
+    // We detect "first mount" by checking if the path is still at root length
+    // AND the previous length was also root length (i.e. nothing changed yet).
+    if (
+      prevExpansionLengthRef.current === expansionPath.length &&
+      expansionPath.length === 1
+    ) {
+      prevExpansionLengthRef.current = expansionPath.length
+      return
+    }
+
+    // Skip geo layout — it manages its own viewport via projection fitting.
+    if (layout === "geo") {
+      prevExpansionLengthRef.current = expansionPath.length
+      return
+    }
+
+    // Guard: viewport must be measured before we can compute a fit.
+    if (measuredWidth === 0 || measuredHeight === 0) {
+      prevExpansionLengthRef.current = expansionPath.length
+      return
+    }
+
+    // Defer by one tick so React has flushed the new positions into state
+    // before we ask zoomToFit to read the graph bounds.
+    const timerId = window.setTimeout(() => {
+      // Pass baseLayout explicitly — it is the freshly computed coordinate map
+      // for the new expansion state and is always up to date, even if the
+      // `positions` state variable hasn't been updated yet on this tick.
+      zoomToFit(baseLayout)
+    }, 0)
+
+    prevExpansionLengthRef.current = expansionPath.length
+
+    // Clean up the timer if the component unmounts or the effect re-runs
+    // before the timeout fires (e.g. user clicks expand twice very fast).
+    return () => window.clearTimeout(timerId)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [expansionPath])
+  // Intentionally omitting zoomToFit / baseLayout / layout / measuredWidth /
+  // measuredHeight from the dependency array: we only want this effect to fire
+  // when the expansion path itself changes. All other values are read via
+  // closure and are always current at the time the setTimeout callback runs.
+  // ─────────────────────────────────────────────────────────────────────────
+
   /** Expose imperative methods to parent via ref. */
   const exportSvgString = () => {
     return buildExportSvg({
@@ -1257,7 +1328,20 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
               onPointerDown={onStopPropagationAndPreventDefault}
               onClick={onExpandClick}
             >
-              <ExpandNode width={16} height={16} />
+              {/*
+                CHANGE 1 — Expand/Collapse icon logic:
+                - The CURRENT FOCUS NODE (last item in expansionPath, but not the root centerKey)
+                  shows CollapseNode — it is already the active radial center/hub, so clicking it
+                  navigates back up (collapses). This matches the screenshot where the hub node
+                  shows the minus/collapse symbol at the top of the node icon.
+                - ALL OTHER expandable nodes (unvisited children, and breadcrumb ancestors)
+                  show ExpandNode — clicking them drills into them.
+                - The root centerKey always shows ExpandNode since it cannot be collapsed further.
+              */}
+              {expansionPath[expansionPath.length - 1] === n.key && n.key !== centerKey
+                ? <CollapseNode width={16} height={16} />
+                : <ExpandNode width={16} height={16} />
+              }
             </button>
           )}
         </div>
@@ -1265,13 +1349,22 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
         <div className="rng__nodeLabel" title={n.text} style={{ fontSize: LABEL_NODE_FONT_SIZE }}>
           {n.text}
         </div>
-        <div className="rng__nodeMenu">
-          <ContentContextMenu
-            open={menuNodeKey === n.key}
-            onOpenChange={(open) => setMenuNodeKey(open ? n.key : null)}
-            node={n}
-          />
-        </div>
+        {/*
+          CHANGE 2 — Suppress the node's own menu when a collapsed box overlay exists for it.
+          The collapsed box already renders its own ContentContextMenu at top-right of the
+          dashed border. Rendering a second one here inside the node causes two "more menus"
+          to appear for the same node. We suppress this one whenever collapsedNodeInfo has
+          an entry for this node (meaning it has a collapsed box drawn around it).
+        */}
+        {!collapsedNodeInfo.has(n.key) && (
+          <div className="rng__nodeMenu">
+            <ContentContextMenu
+              open={menuNodeKey === n.key}
+              onOpenChange={(open) => setMenuNodeKey(open ? n.key : null)}
+              node={n}
+            />
+          </div>
+        )}
         
       </div>
     )
@@ -1366,11 +1459,18 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
               zIndex: 0,
             }}
           >
+            {/*
+              CHANGE 3 — Hidden child count badge moved to top-LEFT corner.
+              Previously it was top-right which caused it to overlap with the
+              "more menu" (context menu trigger) that sits in the top-right area
+              of the node. Moving it to top-left keeps both elements fully visible
+              and avoids the overlap.
+            */}
             <div
               style={{
                 position: 'absolute',
                 top: '-10px',
-                right: '-10px',
+                left: '-10px',      // ← top-left instead of right: '-10px'
                 background: '#3b82f6',
                 color: 'white',
                 padding: '4px 10px',
@@ -1381,9 +1481,6 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
                 boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
                 pointerEvents: 'all',
                 cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
               }}
               onClick={(e) => {
                 e.stopPropagation()
@@ -1392,46 +1489,27 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
                   setExpansionPath(expansionPath.slice(0, nodeIndex + 1))
                 }
               }}
-              onMouseEnter={() => setMenuNodeKey(n.key)}
-              onMouseLeave={() => setMenuNodeKey(null)}
             >
               +{info.hiddenChildren}
-              
-              <div 
-                style={{ 
-                  position: 'relative',
-                  width: '14px',
-                  height: '14px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setMenuNodeKey(n.key)
-                }}
-              >
-                <div style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '2px',
-                  cursor: 'pointer',
+            </div>
 
-                }}>
-                  <div style={{ width: '3px', height: '3px', borderRadius: '70%' }} />
-                  <div style={{ width: '3px', height: '3px', borderRadius: '70%' }} />
-                  <div style={{ width: '3px', height: '3px', borderRadius: '70%' }} />
-                </div>
-                
-                <div style={{ position: 'absolute', top: 0, left: 0  ,  color: '#000000'}}>
-                  <ContentContextMenu
-                    open={menuNodeKey === n.key}
-                    onOpenChange={(open) => setMenuNodeKey(open ? n.key : null)}
-                    node={n}
-                    
-                  />
-                </div>
-              </div>
+            {/*
+              The count badge is top-left, the menu is top-right so they never overlap.
+            */}
+            <div
+              style={{
+                position: 'absolute',
+                top: '-10px',
+                right: '-10px',
+                pointerEvents: 'all',
+                color: '#000000',
+              }}
+            >
+              <ContentContextMenu
+                open={menuNodeKey === n.key}
+                onOpenChange={(open) => setMenuNodeKey(open ? n.key : null)}
+                node={n}
+              />
             </div>
           </div>
         )
@@ -1562,6 +1640,3 @@ export const NetworkGraph = forwardRef<NetworkGraphHandle, NetworkGraphProps>(
     </div>
   )}
 )
-
-
-

@@ -4,6 +4,7 @@
  * @author
  * Enrico Tedeschini
  */
+
 import React, {useEffect, useMemo, useRef, useState} from "react"
 import {NetworkGraphHandle, NetworkNode}  from "./components/networkGraph/types/ComponentsType"
 import { NetworkGraph }                   from "./components/networkGraph/NetworkGraph"
@@ -53,6 +54,10 @@ export default function App() {
   const [generatedModel, setGeneratedModel]   = useState(null)
   const [layoutTimeMs, setLayoutTimeMs]       = useState<number | null>(null)
   const { geoJson }                           = useWorldMap()
+
+  // resetKey is incremented to force a full remount of NetworkGraph
+  // without reloading the entire page, preserving current layout and other state
+  const [resetKey, setResetKey]               = useState(0)
 
   useEffect(() => {
     if (selectedModelId === "gen1") {
@@ -136,13 +141,19 @@ export default function App() {
 
   const onNodeClick = (node: NetworkNode) => {
     console.log("nodeClick", node)
-     if (node.key === selectedModel.centerKey) {
-    window.location.reload()
-  }
+    if (node.key === selectedModel.centerKey) {
+      // Preserve the currently active layout (radial or geo) and force
+      // a clean remount of NetworkGraph by incrementing resetKey.
+      // This replaces window.location.reload() to avoid a full page refresh
+      // and loss of other UI state (readOnly, bezierCurves, zoom, etc.)
+      setLayout(selectedModel.layout)
+      setResetKey((k) => k + 1)
+    }
   }
 
   const onNodeExpandClick = (node: NetworkNode) => {
-    alert(`onNodeExpandClick: ${JSON.stringify(node.key)}`)
+    // alert(`onNodeExpandClick: ${JSON.stringify(node.key)}`)
+    console.log(`Expanded Node ${JSON.stringify(node)}`)
    
   }
 
@@ -192,7 +203,7 @@ export default function App() {
         </div>
 
         <div className="app__graphWrap">
-          {/* TODO Activate to test the render performance, wiht a huge model ,
+        {/* TODO Activate to test the render performance, wiht a huge model ,
               with 500 nodes the October 2025 the time was 32 ms
           <React.Profiler
             id="NetworkGraph"
@@ -202,7 +213,10 @@ export default function App() {
               )
             }}
           > */}
+            {/* key={resetKey} forces NetworkGraph to fully remount when the center
+                node is clicked, replicating a layout reset without a page reload */}
             <NetworkGraph
+              key={resetKey}
               ref={graphRef}
               data={selectedModel.data}
               config={config}
@@ -223,8 +237,6 @@ export default function App() {
     </TooltipProvider>
   )
 }
-
-
 
 
 
