@@ -5,7 +5,9 @@
     "jsx": "react",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     "moduleResolution": "Bundler",
     "module": "ESNext"
   }
 }
+

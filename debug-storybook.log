@@ -1,0 +1,35 @@
+[15:03:33.692] [INFO] storybook v10.2.17
+[15:03:37.036] [DEBUG] Getting package.json info for D:/netscouts/d3js/upackage/package.json...
+[15:03:43.490] [DEBUG] Serving static files from [36mnode_modules/@chromatic-com/storybook/assets[39m at [36m/addon-visual-tests-assets[39m
+[15:03:43.496] [INFO] Starting...
+[15:03:47.624] [DEBUG] Starting preview..
+[15:03:50.607] [WARN] 🚨 Unable to index ./src/stories/App.mdx:
+  Error: Invariant failed: Could not find or load CSF file at path "./src/App" referenced by `of={}` in docs file "src\stories\App.mdx".
+
+- Does that file exist?
+- If so, is it a CSF file (`.stories.*`)?
+- If so, is it matched by the `stories` glob in `main.js`?
+- If so, has the file successfully loaded in Storybook and are its stories visible?
+    at invariant (file:///D:/netscouts/d3js/upackage/node_modules/storybook/dist/_node-chunks/chunk-JLF74TUB.js:20:11)
+    at _StoryIndexGenerator.extractDocs (file:///D:/netscouts/d3js/upackage/node_modules/storybook/dist/core-server/index.js:5983:13)
+    at async file:///D:/netscouts/d3js/upackage/node_modules/storybook/dist/core-server/index.js:5835:39
+    at async Promise.all (index 0)
+    at async Promise.all (index 0)
+    at async _StoryIndexGenerator.updateExtracted (file:///D:/netscouts/d3js/upackage/node_modules/storybook/dist/core-server/index.js:5823:5)
+    at async _StoryIndexGenerator.ensureExtracted (file:///D:/netscouts/d3js/upackage/node_modules/storybook/dist/core-server/index.js:5860:8)
+    at async _StoryIndexGenerator.initialize (file:///D:/netscouts/d3js/upackage/node_modules/storybook/dist/core-server/index.js:5819:5)
+    at async file:///D:/netscouts/d3js/upackage/node_modules/storybook/dist/core-server/presets/common-preset.js:1842:10
+[15:03:50.619] [ERROR] Failed to build the preview
+[15:03:50.627] [ERROR] Error: Unable to index ./src/stories/App.mdx
+    at _StoryIndexGenerator.getIndexAndStats (file:///D:/netscouts/d3js/upackage/node_modules/storybook/dist/core-server/index.js:6087:15)
+    at async _StoryIndexGenerator.getIndex (file:///D:/netscouts/d3js/upackage/node_modules/storybook/dist/core-server/index.js:6076:13)
+    at async getOptimizeDeps (file:///D:/netscouts/d3js/upackage/node_modules/@storybook/builder-vite/dist/index.js:1857:15)
+    at async createViteServer (file:///D:/netscouts/d3js/upackage/node_modules/@storybook/builder-vite/dist/index.js:1884:19)
+    at async Module.start (file:///D:/netscouts/d3js/upackage/node_modules/@storybook/builder-vite/dist/index.js:1912:17)
+    at async storybookDevServer (file:///D:/netscouts/d3js/upackage/node_modules/storybook/dist/core-server/index.js:7295:83)
+    at async buildOrThrow (file:///D:/netscouts/d3js/upackage/node_modules/storybook/dist/core-server/index.js:4506:12)
+    at async buildDevStandalone (file:///D:/netscouts/d3js/upackage/node_modules/storybook/dist/core-server/index.js:7710:41)
+    at async withTelemetry (file:///D:/netscouts/d3js/upackage/node_modules/storybook/dist/_node-chunks/chunk-FTTIUZEI.js:218:12)
+    at async dev (file:///D:/netscouts/d3js/upackage/node_modules/storybook/dist/bin/core.js:2734:3)
+[15:03:50.633] [WARN] Broken build, fix the error above.
+You may need to refresh the browser.
