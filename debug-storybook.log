@@ -1,0 +1,33 @@
+[11:53:01.421] [INFO] storybook v10.2.17
+[11:53:03.709] [DEBUG] Getting package.json info for D:/netscouts/d3js/storybook/d3js-demo/package.json...
+[11:53:05.612] [DEBUG] Serving static files from [36mnode_modules/@chromatic-com/storybook/assets[39m at [36m/addon-visual-tests-assets[39m
+[11:53:05.613] [INFO] Starting...
+[11:53:06.126] [DEBUG] Starting preview..
+[11:53:06.507] [WARN] 🚨 Unable to index ./src/App.stories.ts:
+  NoMetaError: CSF: missing default export D:/netscouts/d3js/storybook/d3js-demo/src/App.stories.ts (line 1, col 0)
+
+More info: https://storybook.js.org/docs/writing-stories?ref=error#default-export
+    at CsfFile.parse (file:///D:/netscouts/d3js/storybook/d3js-demo/node_modules/storybook/dist/_node-chunks/chunk-6CVEYJMV.js:456:13)
+    at Object.createIndex (file:///D:/netscouts/d3js/storybook/d3js-demo/node_modules/storybook/dist/core-server/presets/common-preset.js:1802:81)
+    at async _StoryIndexGenerator.extractStories (file:///D:/netscouts/d3js/storybook/d3js-demo/node_modules/storybook/dist/core-server/index.js:5914:23)
+    at async file:///D:/netscouts/d3js/storybook/d3js-demo/node_modules/storybook/dist/core-server/index.js:5835:39
+    at async Promise.all (index 0)
+    at async Promise.all (index 1)
+    at async _StoryIndexGenerator.updateExtracted (file:///D:/netscouts/d3js/storybook/d3js-demo/node_modules/storybook/dist/core-server/index.js:5823:5)
+    at async _StoryIndexGenerator.ensureExtracted (file:///D:/netscouts/d3js/storybook/d3js-demo/node_modules/storybook/dist/core-server/index.js:5858:5)
+    at async _StoryIndexGenerator.initialize (file:///D:/netscouts/d3js/storybook/d3js-demo/node_modules/storybook/dist/core-server/index.js:5819:5)
+    at async file:///D:/netscouts/d3js/storybook/d3js-demo/node_modules/storybook/dist/core-server/presets/common-preset.js:1842:10
+[11:53:06.512] [ERROR] Failed to build the preview
+[11:53:06.513] [ERROR] Error: Unable to index ./src/App.stories.ts
+    at _StoryIndexGenerator.getIndexAndStats (file:///D:/netscouts/d3js/storybook/d3js-demo/node_modules/storybook/dist/core-server/index.js:6087:15)
+    at async _StoryIndexGenerator.getIndex (file:///D:/netscouts/d3js/storybook/d3js-demo/node_modules/storybook/dist/core-server/index.js:6076:13)
+    at async getOptimizeDeps (file:///D:/netscouts/d3js/storybook/d3js-demo/node_modules/@storybook/builder-vite/dist/index.js:1857:15)
+    at async createViteServer (file:///D:/netscouts/d3js/storybook/d3js-demo/node_modules/@storybook/builder-vite/dist/index.js:1884:19)
+    at async Module.start (file:///D:/netscouts/d3js/storybook/d3js-demo/node_modules/@storybook/builder-vite/dist/index.js:1912:17)
+    at async storybookDevServer (file:///D:/netscouts/d3js/storybook/d3js-demo/node_modules/storybook/dist/core-server/index.js:7295:83)
+    at async buildOrThrow (file:///D:/netscouts/d3js/storybook/d3js-demo/node_modules/storybook/dist/core-server/index.js:4506:12)
+    at async buildDevStandalone (file:///D:/netscouts/d3js/storybook/d3js-demo/node_modules/storybook/dist/core-server/index.js:7710:41)
+    at async withTelemetry (file:///D:/netscouts/d3js/storybook/d3js-demo/node_modules/storybook/dist/_node-chunks/chunk-FTTIUZEI.js:218:12)
+    at async dev (file:///D:/netscouts/d3js/storybook/d3js-demo/node_modules/storybook/dist/bin/core.js:2734:3)
+[11:53:06.515] [WARN] Broken build, fix the error above.
+You may need to refresh the browser.
